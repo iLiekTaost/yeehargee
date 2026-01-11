@@ -1,31 +1,24 @@
+name: yeehargee
 services:
-  jellyfin:
-    image: jellyfin/jellyfin:latest
-    container_name: jellyfin
-    network_mode: "host"
-    volumes:
-      - ./jellyfin/config:/config
-      - ./jellyfin/cache:/cache
-      - /path/to/media:/media
-    restart: unless-stopped
+  # Starr apps for downloading
   sonarr:
     image: linuxserver/sonarr:latest
     container_name: sonarr
-    network_mode: "host"
     volumes:
-      - ./sonarr/config:/config
-      - ./tv:/tv
-      - /path/to/downloads:/downloads
+      - backend:/data
     restart: unless-stopped
   radarr:
     image: linuxserver/radarr:latest
     container_name: radarr
-    network_mode: "host"
     volumes:
-      - ./radarr/config:/config
-      - /path/to/movies:/movies
-      - /path/to/downloads:/downloads
+      - backend:/data
+    restart: unless-stopped
+  # Media server
+  jellyfin:
+    image: jellyfin/jellyfin:latest
+    container_name: jellyfin
+    volumes:
+      - backend:/data
     restart: unless-stopped
 volumes:
-  shared:
-    
+  backend:
