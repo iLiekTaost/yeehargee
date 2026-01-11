@@ -5,20 +5,39 @@ services:
     image: linuxserver/sonarr:latest
     container_name: sonarr
     volumes:
-      - backend:/data
+      - ./data:/data
     restart: unless-stopped
   radarr:
     image: linuxserver/radarr:latest
     container_name: radarr
     volumes:
-      - backend:/data
+      - ./data:/data
     restart: unless-stopped
+    ports:
+      - "7878:7878"
+
   # Media server
+  # TODO: restrict media server access to /data/media only
   jellyfin:
     image: jellyfin/jellyfin:latest
     container_name: jellyfin
     volumes:
-      - backend:/data
+      - ./data/media:/data/media
     restart: unless-stopped
-volumes:
-  backend:
+
+  # torrent client
+  qbittorrent:
+    image: linuxserver/qbittorrent:latest
+    container_name: qbit
+    volumes:
+      - ./data/torrents:/data/torrents
+      - ./config/qbit:/config
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+      - "6881:6881"
+      - "6881:6881/udp"
+    environment:
+      - WEBUI_PORT=8080
+      - TORRENTING_PORT=6881
+
