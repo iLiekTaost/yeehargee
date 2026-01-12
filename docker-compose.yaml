@@ -1,28 +1,66 @@
 name: yeehargee
+# secrets:
+#   wireguard_private_key:
+#     file: ./config/gluetun-wireguard.conf
 services:
   # Starr apps for downloading
-  sonarr:
+  sonarr:  # tv service
     image: linuxserver/sonarr:latest
     container_name: sonarr
     volumes:
       - ./data:/data
+      - ./sonarr:/config
     restart: unless-stopped
-  radarr:
+    ports:
+      - 8989:8989
+  radarr:  # movie service
     image: linuxserver/radarr:latest
     container_name: radarr
     volumes:
       - ./data:/data
+      - ./radarr:/config
     restart: unless-stopped
     ports:
       - "7878:7878"
 
   # Media server
-  # TODO: restrict media server access to /data/media only
   jellyfin:
     image: jellyfin/jellyfin:latest
     container_name: jellyfin
     volumes:
       - ./data/media:/data/media
+      - ./jellyfin:/config
+      - ./data/media/tvshows:/data/tvshows
+      - ./data/media/movies:/data/movies
+    ports:
+      - 8096:8096
+      - 8920:8920
+      - 7359:7359/udp
+      - 1900:1900/udp
+    restart: unless-stopped
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=
+      
+  jellyseerr:
+    image: ghcr.io/fallenbagel/jellyseerr:latest
+    init: true
+    container_name: jellyseerr
+    environment:
+      - LOG_LEVEL=debug
+      - TZ=
+      - PORT=5055 #optional
+    ports:
+      - 5055:5055
+    volumes:
+      - ./jellyseerr/config:/app/config
+    healthcheck:
+      test: wget --no-verbose --tries=1 --spider http://localhost:5055/api/v1/status || exit 1
+      start_period: 20s
+      timeout: 3s
+      interval: 15s
+      retries: 3
     restart: unless-stopped
 
   # torrent client
@@ -31,13 +69,48 @@ services:
     container_name: qbit
     volumes:
       - ./data/torrents:/data/torrents
-      - ./config/qbit:/config
+      - ./qbit:/config
     restart: unless-stopped
-    ports:
-      - "8080:8080"
-      - "6881:6881"
-      - "6881:6881/udp"
     environment:
       - WEBUI_PORT=8080
       - TORRENTING_PORT=6881
-
+      - PUID=1000
+      - PGID=1000
+    # network_mode: "service:gluetun"
+    depends_on:
+      gluetun:
+        condition: service_healthy
+    ports:
+      - "8080:8080"  # webserver, for requests from radarr and sonarr
+      - "6881:6881"  # torrenting port
+      - "6881:6881/udp"  # torrenting port
+  
+  # vpn
+  gluetun:
+    ports:
+      - 8888:8888/tcp  # HTTP proxy
+      - 8388:8388/tcp  # Shadowsocks
+      - 8388:8388/udp  # Shadowsocks
+    image: qmcgaw/gluetun:latest
+    container_name: gluetun
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    volumes:
+      - ./gluetun:/gluetun
+    # secrets:
+    #   - wireguard_private_key
+    # env_file: "config/gluetun-wireguard.conf"
+    environment:
+      # See https://github.com/qdm12/gluetun-wiki/tree/main/setup#setup
+      - VPN_SERVICE_PROVIDER=protonvpn
+      - VPN_TYPE=wireguard
+      # Wireguard:
+      - WIREGUARD_PRIVATE_KEY=${PRIVATEKEY}
+      - WIREGUARD_ADDRESSES=${ADDRESS}
+      # Timezone for accurate log times
+      - TZ=
+      # Server list updater
+      # See https://github.com/qdm12/gluetun-wiki/blob/main/setup/servers.md#update-the-vpn-servers-list
+      - UPDATER_PERIOD=
