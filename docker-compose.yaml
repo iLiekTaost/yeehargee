@@ -1,7 +1,7 @@
 name: yeehargee
 # secrets:
 #   wireguard_private_key:
-#     file: ./config/gluetun-wireguard.conf
+#     file: ./wireguard_private_key
 services:
   # Starr apps for downloading
   sonarr:  # tv service
@@ -110,56 +110,52 @@ services:
       - PUID=1000
       - PGID=1000
       - TZ=America/Phoenix
+    # ports:
+    #  - 8080:8080
+    #  - 6881:6881
+    #  - 6881:6881/udp
     network_mode: "service:gluetun"
     depends_on:
       gluetun:
         condition: service_healthy
-    # ports:
   
   # vpn
   gluetun:
+    cap_add:
+      - NET_ADMIN
     ports:
-      - 8888:8888/tcp  # HTTP proxy
-      - 8388:8388/tcp  # Shadowsocks
-      - 8388:8388/udp  # Shadowsocks
-      # ----------- moved from qbittorrent when network_mode is set -----------
+      - "8888:8888/tcp"  # HTTP proxy
+      - "8388:8388/tcp"  # Shadowsocks
+      - "8388:8388/udp"  # Shadowsocks
+      # ---------- moved from other services when network_mode is set ----------
+      # qbit
       - "8080:8080"  # webserver, for requests from radarr and sonarr
-      - "6881:6881"  # torrenting port
-      - "6881:6881/udp"  # torrenting port
-      # -----------------------------------------------------------------------
+      - "6881:6881"
+      - "6881:6881/udp"
       # sonarr
-      - 8989:8989
+      - "8989:8989"
       # radarr
       - "7878:7878"
       # prowlarr
-      - 9696:9696
+      - "9696:9696"
       # jellyfin  
-      - 8096:8096
-      - 8920:8920
-      - 7359:7359/udp
-      - 1900:1900/udp
+      - "8096:8096"
+      - "8920:8920"
+      - "7359:7359/udp"
+      - "1900:1900/udp"
       # jellyseerr
-      - 5055:5055      
+      - "5055:5055"
     image: qmcgaw/gluetun:latest
     container_name: gluetun
-    cap_add:
-      - NET_ADMIN
     devices:
       - /dev/net/tun:/dev/net/tun
     volumes:
       - ./services/gluetun:/gluetun
-    # secrets:
-    #   - wireguard_private_key
-    # env_file: "config/gluetun-wireguard.conf"
     environment:
       # See https://github.com/qdm12/gluetun-wiki/tree/main/setup#setup
       - VPN_SERVICE_PROVIDER=protonvpn
       - VPN_TYPE=wireguard
-      # TODO: make this secret so I can git push
-      - WIREGUARD_PRIVATE_KEY=
-      # - WIREGUARD_ADDRESSES=${ADDRESS}
-      # - SERVER_COUNTRIES=Mexico
+      - WIREGUARD_PRIVATE_KEY_FILE=/run/secrets/wireguard_private_key
       - UDPATER_PERIOD=1h
-      # - PORT_FORWARD_ONLY=on
-      # port forwarding is only available on select p2p protonvpn servers!
-      # - VPN_PORT_FORWARDING=on  # see https://protonvpn.com/support/port-forwarding
+    # secrets:
+    #   - wireguard_private_key
