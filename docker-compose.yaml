@@ -7,21 +7,52 @@ services:
   sonarr:  # tv service
     image: linuxserver/sonarr:latest
     container_name: sonarr
+    # hostname: sonarr.internal
     volumes:
       - ./data:/data
       - ./services/sonarr:/config
     restart: unless-stopped
-    ports:
-      - 8989:8989
+    # ports:
+    #   - 8989:8989
+    network_mode: "service:gluetun"
+    logging:
+      driver: json-file
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=American/Phoenix
+  
   radarr:  # movie service
     image: linuxserver/radarr:latest
     container_name: radarr
+    # hostname: radarr.internal
     volumes:
       - ./data:/data
       - ./services/radarr:/config
     restart: unless-stopped
-    ports:
-      - "7878:7878"
+    # ports:
+    #   - "7878:7878"
+    network_mode: "service:gluetun"
+    logging:
+      driver: json-file
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Phoenix
+
+  prowlarr:
+    image: lscr.io/linuxserver/prowlarr:latest
+    container_name: prowlarr
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Phoenix
+    volumes:
+      - ./services/prowlarr:/config
+    # ports:
+    #  - 9696:9696
+    network_mode: "service:gluetun"
+    restart: unless-stopped
 
   # Media server
   jellyfin:
@@ -32,11 +63,12 @@ services:
       - ./data/media:/data/media
       - ./data/media/tvshows:/data/tvshows
       - ./data/media/movies:/data/movies
-    ports:
-      - 8096:8096
-      - 8920:8920
-      - 7359:7359/udp
-      - 1900:1900/udp
+    # ports:
+    #   - 8096:8096
+    #   - 8920:8920
+    #   - 7359:7359/udp
+    #   - 1900:1900/udp
+    network_mode: "service:gluetun"
     restart: unless-stopped
     environment:
       - PUID=1000
@@ -51,8 +83,9 @@ services:
       - LOG_LEVEL=debug
       - TZ=
       - PORT=5055 #optional
-    ports:
-      - 5055:5055
+    # ports:
+    #   - 5055:5055
+    network_mode: "service:gluetun"
     volumes:
       - ./services/jellyseerr:/app/config
     healthcheck:
@@ -76,14 +109,12 @@ services:
       - TORRENTING_PORT=6881
       - PUID=1000
       - PGID=1000
-    # network_mode: "service:gluetun"
+      - TZ=America/Phoenix
+    network_mode: "service:gluetun"
     depends_on:
       gluetun:
         condition: service_healthy
-    ports:
-      - "8080:8080"  # webserver, for requests from radarr and sonarr
-      - "6881:6881"  # torrenting port
-      - "6881:6881/udp"  # torrenting port
+    # ports:
   
   # vpn
   gluetun:
@@ -91,6 +122,24 @@ services:
       - 8888:8888/tcp  # HTTP proxy
       - 8388:8388/tcp  # Shadowsocks
       - 8388:8388/udp  # Shadowsocks
+      # ----------- moved from qbittorrent when network_mode is set -----------
+      - "8080:8080"  # webserver, for requests from radarr and sonarr
+      - "6881:6881"  # torrenting port
+      - "6881:6881/udp"  # torrenting port
+      # -----------------------------------------------------------------------
+      # sonarr
+      - 8989:8989
+      # radarr
+      - "7878:7878"
+      # prowlarr
+      - 9696:9696
+      # jellyfin  
+      - 8096:8096
+      - 8920:8920
+      - 7359:7359/udp
+      - 1900:1900/udp
+      # jellyseerr
+      - 5055:5055      
     image: qmcgaw/gluetun:latest
     container_name: gluetun
     cap_add:
@@ -106,11 +155,11 @@ services:
       # See https://github.com/qdm12/gluetun-wiki/tree/main/setup#setup
       - VPN_SERVICE_PROVIDER=protonvpn
       - VPN_TYPE=wireguard
-      # Wireguard:
-      - WIREGUARD_PRIVATE_KEY=${PRIVATEKEY}
-      - WIREGUARD_ADDRESSES=${ADDRESS}
-      # Timezone for accurate log times
-      - TZ=
-      # Server list updater
-      # See https://github.com/qdm12/gluetun-wiki/blob/main/setup/servers.md#update-the-vpn-servers-list
-      - UPDATER_PERIOD=
+      # TODO: make this secret so I can git push
+      - WIREGUARD_PRIVATE_KEY=
+      # - WIREGUARD_ADDRESSES=${ADDRESS}
+      # - SERVER_COUNTRIES=Mexico
+      - UDPATER_PERIOD=1h
+      # - PORT_FORWARD_ONLY=on
+      # port forwarding is only available on select p2p protonvpn servers!
+      # - VPN_PORT_FORWARDING=on  # see https://protonvpn.com/support/port-forwarding
