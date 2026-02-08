@@ -15,4 +15,5 @@ if [[ $? -ne 0 ]]; then
 fi
 set -e
 tailscale up
+echo "Run \`sudo tailscale down\` when you're done with remotely accessing this network."
 
