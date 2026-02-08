@@ -1,7 +1,7 @@
 name: yeehargee
-# secrets:
-#   wireguard_private_key:
-#     file: ./wireguard_private_key
+secrets:
+  wireguard_private_key:
+    file: ./wireguard_private_key
 services:
   # Starr apps for downloading
   sonarr:  # tv service
@@ -157,5 +157,5 @@ services:
       - VPN_TYPE=wireguard
       - WIREGUARD_PRIVATE_KEY_FILE=/run/secrets/wireguard_private_key
       - UDPATER_PERIOD=1h
-    # secrets:
-    #   - wireguard_private_key
+    secrets:
+      - wireguard_private_key
