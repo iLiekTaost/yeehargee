@@ -1,3 +1,6 @@
 .*
 *.pyc
 services
+data
+wireguard_private_key
+*.conf
