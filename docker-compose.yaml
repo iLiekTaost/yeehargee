@@ -12,9 +12,8 @@ services:
       - ./data:/data
       - ./services/sonarr:/config
     restart: unless-stopped
-    # ports:
-    #   - 8989:8989
-    network_mode: "service:gluetun"
+    ports:
+      - 8989:8989
     logging:
       driver: json-file
     environment:
@@ -30,9 +29,8 @@ services:
       - ./data:/data
       - ./services/radarr:/config
     restart: unless-stopped
-    # ports:
-    #   - "7878:7878"
-    network_mode: "service:gluetun"
+    ports:
+      - "7878:7878"
     logging:
       driver: json-file
     environment:
@@ -40,7 +38,7 @@ services:
       - PGID=1000
       - TZ=America/Phoenix
 
-  prowlarr:
+  prowlarr:  # indexer service
     image: lscr.io/linuxserver/prowlarr:latest
     container_name: prowlarr
     environment:
@@ -49,9 +47,8 @@ services:
       - TZ=America/Phoenix
     volumes:
       - ./services/prowlarr:/config
-    # ports:
-    #  - 9696:9696
-    network_mode: "service:gluetun"
+    ports:
+     - 9696:9696
     restart: unless-stopped
 
   # Media server
@@ -61,14 +58,13 @@ services:
     volumes:
       - ./services/jellyfin:/config
       - ./data/media:/data/media
-      - ./data/media/tvshows:/data/tvshows
+      - ./data/media/tv:/data/tv
       - ./data/media/movies:/data/movies
-    # ports:
-    #   - 8096:8096
-    #   - 8920:8920
-    #   - 7359:7359/udp
-    #   - 1900:1900/udp
-    network_mode: "service:gluetun"
+    ports:
+      - 8096:8096
+      - 8920:8920
+      - 7359:7359/udp
+      - 1900:1900/udp
     restart: unless-stopped
     environment:
       - PUID=1000
@@ -83,9 +79,8 @@ services:
       - LOG_LEVEL=debug
       - TZ=
       - PORT=5055 #optional
-    # ports:
-    #   - 5055:5055
-    network_mode: "service:gluetun"
+    ports:
+      - 5055:5055
     volumes:
       - ./services/jellyseerr:/app/config
     healthcheck:
@@ -132,19 +127,6 @@ services:
       - "8080:8080"  # webserver, for requests from radarr and sonarr
       - "6881:6881"
       - "6881:6881/udp"
-      # sonarr
-      - "8989:8989"
-      # radarr
-      - "7878:7878"
-      # prowlarr
-      - "9696:9696"
-      # jellyfin  
-      - "8096:8096"
-      - "8920:8920"
-      - "7359:7359/udp"
-      - "1900:1900/udp"
-      # jellyseerr
-      - "5055:5055"
     image: qmcgaw/gluetun:latest
     container_name: gluetun
     devices:
