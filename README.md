@@ -38,3 +38,7 @@ Go to [torguard](https://torguard.net/check-my-torrent-ip-address/), right-click
 
 ## Troubleshooting gluetun's startup health check
 Sometimes, gluetun fails to start due to a failed connection to ProtonVPN. To fix this you can go back to ProtonVPN account settings and delete the certificate you created earlier, and follow the steps under "ProtonVPN authentication" again to create a new private key. I still don't know why this needs to be done so often, especially because I added a script to this repo for verifying your credentials work, `test-wg.sh`. To run it, enter `sudo test-wg.sh <your configuration file>`.
+
+## Firewall limitations
+If you use ufw or firewalld to manage firewall settings, be aware that when you expose container ports using Docker, these ports bypass your firewall rules. For more information, refer to Docker and ufw.
+Docker is only compatible with iptables-nft and iptables-legacy. Firewall rules created with nft are not supported on a system with Docker installed. Make sure that any firewall rulesets you use are created with iptables or ip6tables, and that you add them to the DOCKER-USER chain, see Packet filtering and firewalls.
