@@ -96,7 +96,7 @@ services:
     image: linuxserver/qbittorrent:latest
     container_name: qbit
     volumes:
-      - ./data/torrents:/data/torrents
+      - ./data:/data
       - ./services/qbit:/config
     restart: unless-stopped
     environment:
