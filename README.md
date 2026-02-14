@@ -1,3 +1,7 @@
+Yeehargee, matey!
+
+![Patchy](https://media1.tenor.com/m/phAx6aXjh0AAAAAd/patchy-the-pirate-spongebob.gif)
+
 # 0. Introduction
 This configuration follows some of [Trash Guides](https://trash-guides.info/) to create a composition of containers for torrenting media. This README will show you what to do once you've cloned this repository to get started using ProtonVPN with a Wireguard configuration instead of OpenVPN.
 
@@ -27,7 +31,7 @@ Your services at this point are available via your web browser. But, there are a
 ## Logging into qBitTorrent (localhost:8080) for the first time
 In your browser, navigate to localhost:8080. Use "admin" for the username, and the password is the temporary password you copied to your clipboard.
 
-### Change your aBitTorrent password
+### Change your qBitTorrent password
 Once you've logged in, open the settings wheel through the web UI, tab over to "WebUI," and set up your username and password. Also, in the same tab, under Authentication, click the boxes to bypass authenticating for clients on the localhost and whitelisted IP subnets to allow Sonarr, Radarr, and other services to find qBitTorrent automatically.
 
 ## Connecting your services together
