@@ -9,7 +9,7 @@ Your `wireguard_private_key` plaintext file is where docker-compose will look fo
 ### ProtonVPN authentication
 Go to [ProtonVPN account settings](https://account.proton.me/u/0/vpn/WireGuard), and
 1. Give a name to the config to be generated (like protonvpn-cert.conf)
-2. Select GLU/Linux
+2. Select GNU/Linux
 3. Select only the "VPN Accelerator" option
 4. Click "Create" on any VPN server/location (the private key you are generating can be used for _any_ ProtonVPN server, not just the one you select)
 5. Copy the text in the pop-up window into your `wireguard_private_key` file
