@@ -3,6 +3,12 @@ secrets:
   wireguard_private_key:
     file: ./wireguard_private_key
 services:
+  byparr:
+    image: ghcr.io/thephaseless/byparr:latest
+    container_name: byparr
+    ports:
+      - 8191:8191
+    restart: unless-stopped
   # Starr apps for downloading
   sonarr:  # tv service
     image: linuxserver/sonarr:latest
