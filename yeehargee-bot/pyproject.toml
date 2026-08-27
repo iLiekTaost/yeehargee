@@ -1,0 +1,62 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "yeehargee-bot"
+# dynamic = ["version"]
+# description = ''
+# readme = "README.md"
+# requires-python = ">=3.8"
+# license = "MIT"
+# keywords = []
+version = "2026.08.26"
+authors = [
+  { name = "Nick Talbert", email = "nickjamestalbert@gmail.com" },
+]
+# classifiers = [
+#   "Development Status :: 4 - Beta",
+#   "Programming Language :: Python",
+#   "Programming Language :: Python :: 3.8",
+#   "Programming Language :: Python :: 3.9",
+#   "Programming Language :: Python :: 3.10",
+#   "Programming Language :: Python :: 3.11",
+#   "Programming Language :: Python :: 3.12",
+#   "Programming Language :: Python :: Implementation :: CPython",
+#   "Programming Language :: Python :: Implementation :: PyPy",
+# ]
+dependencies = []
+
+# [project.urls]
+# Documentation = "https://github.com/Nick Talbert/yeehargee-bot#readme"
+# Issues = "https://github.com/Nick Talbert/yeehargee-bot/issues"
+# Source = "https://github.com/Nick Talbert/yeehargee-bot"
+
+# [tool.hatch.version]
+# path = "src/yeehargee_bot/__about__.py"
+
+# [tool.hatch.envs.types]
+# extra-dependencies = [
+#   "mypy>=1.0.0",
+# ]
+# [tool.hatch.envs.types.scripts]
+# check = "mypy --install-types --non-interactive {args:src/yeehargee_bot tests}"
+
+# [tool.coverage.run]
+# source_pkgs = ["yeehargee_bot", "tests"]
+# branch = true
+# parallel = true
+# omit = [
+#   "src/yeehargee_bot/__about__.py",
+# ]
+
+# [tool.coverage.paths]
+# yeehargee_bot = ["src/yeehargee_bot", "*/yeehargee-bot/src/yeehargee_bot"]
+# tests = ["tests", "*/yeehargee-bot/tests"]
+
+# [tool.coverage.report]
+# exclude_lines = [
+#   "no cov",
+#   "if __name__ == .__main__.:",
+#   "if TYPE_CHECKING:",
+# ]

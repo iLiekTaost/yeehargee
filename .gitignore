@@ -1,5 +1,7 @@
 .*
 *.pyc
+__pycache__
+.env
 services
 data
 wireguard_private_key
