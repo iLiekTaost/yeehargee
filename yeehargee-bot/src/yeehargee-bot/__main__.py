@@ -1,10 +1,10 @@
-from argparse import ArgumentParser, Namespace
-import os
+from argparse import Namespace
 import sys
 
-def main():
-    print('yeehargee!')
-    print(f'os.environ["VERSION"] IS: {os.environ["VERSION"]}')
+from .cli import parse_cli
+from . import YeehargeeBot
 
 if __name__ == '__main__':
-    sys.exit(main())
+    args = parse_cli()
+    bot = YeehargeeBot.get_bot()
+    sys.exit(bot.main(args))

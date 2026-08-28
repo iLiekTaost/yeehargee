@@ -10,7 +10,7 @@ name = "yeehargee-bot"
 # requires-python = ">=3.8"
 # license = "MIT"
 # keywords = []
-version = "2026.08.26"
+version = "2026.08.28"
 authors = [
   { name = "Nick Talbert", email = "nickjamestalbert@gmail.com" },
 ]
@@ -25,7 +25,10 @@ authors = [
 #   "Programming Language :: Python :: Implementation :: CPython",
 #   "Programming Language :: Python :: Implementation :: PyPy",
 # ]
-dependencies = []
+dependencies = [
+  "discord.py",
+  "coloredlogs",
+]
 
 # [project.urls]
 # Documentation = "https://github.com/Nick Talbert/yeehargee-bot#readme"

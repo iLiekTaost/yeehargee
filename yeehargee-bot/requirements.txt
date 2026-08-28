@@ -1,1 +1,4 @@
 build
+discord.py
+coloredlogs
+typing_extensions

@@ -16,10 +16,9 @@ COPY ./pyproject.toml LICENSE.txt README.md requirements.txt /app
 # RUN python -m build && python 
 RUN dnf install -y python3-devel
 RUN python3 -m venv /app/venv
-RUN source /app/venv/bin/activate
 RUN pip install -r /app/requirements.txt
 RUN python3 -m build
-RUN pip install /app/dist/yeehargee_bot-2026.8.26-py3-none-any.whl
+RUN pip install /app/dist/yeehargee_bot-*-py3-none-any.whl
 
 # # RUN python -m venv venv && \
 # #     pip install -r requirements.txt && \
